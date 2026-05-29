@@ -667,6 +667,12 @@ html{font-size:clamp(13px,1.1vw,15px)}
 @media(max-width:900px){.dash-grid{grid-template-columns:1fr}}
 .loader{display:flex;align-items:center;justify-content:center;padding:28px;color:var(--text3);flex-direction:column;gap:8px}
 .loader i{font-size:22px;animation:spin 1s linear infinite}
+@keyframes skshimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+.skel{background:linear-gradient(90deg,var(--surface2) 25%,var(--border) 50%,var(--surface2) 75%);background-size:1200px 100%;animation:skshimmer 1.6s infinite;border-radius:var(--r-sm);display:block}
+.skel-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.skel-row:last-child{border-bottom:none}
+.skel-circle{border-radius:50%;flex-shrink:0}
+.skel-text{display:flex;flex-direction:column;gap:6px;flex:1}
 
 /* ══════════════════════════════════
    DARK MODE OVERRIDES
@@ -717,7 +723,7 @@ html{font-size:clamp(13px,1.1vw,15px)}
   .sidebar{width:260px;transform:translateX(-260px)}
   .sidebar.open{transform:translateX(0)}
   .main{margin-left:0;padding-bottom:72px}
-  .hamburger{display:none!important}
+  .hamburger{display:flex!important;align-items:center;justify-content:center}
   .bottom-nav{display:block}
   .page{padding:10px;padding-bottom:80px}
   .topbar{padding:0 10px;gap:7px}
@@ -1885,6 +1891,7 @@ async function loadRooster() {
 }
 async function loadUren() {
   const el=document.getElementById('uren-content'); if(!el) return;
+  el.innerHTML=skelRows(4);
   try {
     const hrs=await api('GET','/stats/hours'); if(!hrs) return;
     const myHrs=currentUser.role==='admin'?hrs:hrs.filter(h=>h.id===currentUser.id);
@@ -1901,6 +1908,7 @@ async function loadUren() {
 }
 async function loadLeave() {
   const el=document.getElementById('verlof-content'); if(!el) return;
+  el.innerHTML=skelCards(3);
   try {
     const reqs=await api('GET','/leave'); if(!reqs) return;
     const list=currentUser.role==='admin'?reqs.filter(r=>r.status==='pending'):reqs;
