@@ -523,6 +523,30 @@ html{font-size:clamp(13px,1.1vw,15px)}
 @media(min-width:640px){#assign-content{max-height:calc(100vh - 260px);overflow-y:auto}#uren-content{max-height:calc(100vh - 280px);overflow-y:auto}#verlof-content{max-height:calc(100vh - 300px);overflow-y:auto}}
 
 /* ══════════════════════════════════
+   OBSERVATION CARDS
+══════════════════════════════════ */
+.obs-cards{display:flex;flex-direction:column;gap:6px}
+.obs-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:12px;transition:.15s;box-shadow:var(--shadow)}
+.obs-card:hover{box-shadow:var(--shadow-md);border-color:var(--border2)}
+.obs-card-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.obs-card-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.obs-card-info{flex:1;min-width:0}
+.obs-card-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.obs-card-sub{font-size:10px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.obs-card-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.obs-card-due{font-size:10px;font-weight:600;text-align:right;min-width:70px}
+.obs-card-due .due-date{font-size:11px;font-weight:700}
+.obs-card-due .due-label{font-size:9px;color:var(--text3);margin-top:1px}
+@media(max-width:639px){
+  .obs-card{flex-wrap:wrap;gap:8px}
+  .obs-card-right{width:100%;justify-content:space-between}
+  .obs-card-due{display:none}
+}
+@media(min-width:640px){
+  #obs-card-container{max-height:calc(100vh - 340px);overflow-y:auto}
+}
+
+/* ══════════════════════════════════
    TIMELINE & PDAY
 ══════════════════════════════════ */
 .tl-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);animation:slideR .2s ease}
@@ -1631,13 +1655,17 @@ function renderObs() {
         <div class="obs-card-av" style="background:${col}">${inits}</div>
         <div class="obs-card-info">
           <div class="obs-card-name">${ch.name}</div>
-          <div class="obs-card-sub"><span class="badge ${GRP[ch.group_name]||'b-gray'}" style="font-size:9px">${ch.group_name.replace('groep','')}</span>&nbsp;·&nbsp;${ch.leidster_name||'—'}&nbsp;·&nbsp;${ch.last_obs?fmtDate(ch.last_obs):'Nooit'}</div>
+          <div class="obs-card-sub">
+            <span class="badge ${GRP[ch.group_name]||'b-gray'}">${ch.group_name}</span>
+            <span>${ch.leidster_name||'Geen leidster'}</span>
+            <span>Laatste: ${ch.last_obs?fmtDate(ch.last_obs):'Nog nooit'}</span>
+          </div>
         </div>
       </div>
       <div class="obs-card-right">
-        <div class="obs-card-due" style="color:${cfg.color}">
-          <div style="font-size:10px;font-weight:700">${ch.next_obs_due?fmtDate(ch.next_obs_due):'Z.s.m.'}</div>
-          <div style="font-size:9px;color:var(--text3)">volgende</div>
+        <div class="obs-card-due">
+          <div class="due-date" style="color:${cfg.color}">${ch.next_obs_due?fmtDate(ch.next_obs_due):'Z.s.m.'}</div>
+          <div class="due-label">volgende obs.</div>
         </div>
         <span class="chip ${cfg.cls}"><i class="ti ${cfg.icon}"></i>${cfg.label}</span>
         <div class="chk${isDone?' on':''}" onclick="toggleObs(${ch.id},${isDone},this)" title="${isDone?'Afgerond':'Markeer afgerond'}">${isDone?'<i class="ti ti-check" style="font-size:11px"></i>':''}</div>
